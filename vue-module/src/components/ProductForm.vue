@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3 class="m-4">Форма для додавання продукту</h3>
-    <form @submit="addNewProduct">
+    <form>
       <div>
         <label>
           Назва продукту:
@@ -57,7 +57,7 @@
           />
         </label>
       </div>
-      <button class="btn btn-success">
+      <button class="btn btn-success" @click="addNewProduct">
         Додати до списку
       </button>
     </form>
