@@ -1,15 +1,21 @@
 <template>
   <div>
-    <div class="m-4">
-      <h5 class="filter m-4">Фільтр</h5>
-      <select v-model="filter" class="form-select">
-        <option value="title">Назва</option>
-        <option value="measurement">Одиниця вимірювання</option>
-        <option value="amount">Кількість</option>
-        <option value="price">Ціна</option>
-      </select>
+    <div class="filtration">
+      <div>
+        <h5 class="filter m-4">Сортувати</h5>
+        <select v-model="filter" class="form-select">
+          <option value="title">Назва</option>
+          <option value="measurement">Одиниця вимірювання</option>
+          <option value="amount">Кількість</option>
+          <option value="price">Ціна</option>
+        </select>
+      </div>
+      <div>
+        <h5 class="filter m-4">Пошук</h5>
+        <input type="text" class="sort-input" v-model="search" />
+      </div>
     </div>
-    <div class="product-list">
+    <div class="product-list ">
       <product-list-item
         v-for="product in filteredList"
         :product="product"
@@ -31,6 +37,7 @@ export default {
   data() {
     return {
       filter: '',
+      search: '',
     };
   },
   methods: {
@@ -56,32 +63,57 @@ export default {
   computed: {
     ...mapGetters(['getProductList']),
     filteredList() {
-      const list = [...this.getProductList];
+      let list = [...this.getProductList];
       if (this.filter) {
         switch (this.filter) {
           case 'title':
-            return list.sort(this.sortText);
+            list = list.sort(this.sortText);
+            break;
           case 'measurement': {
-            return list.sort(this.sortText);
+            list = list.sort(this.sortText);
+            break;
           }
           case 'amount': {
-            return list.sort(this.sortNumbers);
+            list = list.sort(this.sortNumbers);
+            break;
           }
           case 'price': {
-            return list.sort(this.sortNumbers);
+            list = list.sort(this.sortNumbers);
+            break;
           }
         }
       }
-      return this.getProductList;
+      if (this.search) {
+        list = list.filter(({ title }) => {
+          return title.toLowerCase().includes(this.search.toLowerCase());
+        });
+      }
+      return list;
     },
   },
 };
 </script>
 
 <style lang="css" scoped>
+.filtration {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.filtration div {
+  width: 100%;
+  margin: 15px;
+}
 .filter {
   text-align: center;
-  font-size: 1.7rem;
+  line-height: 1.5;
+}
+.sort-input {
+  padding: 7px;
+  width: 100%;
+  border-radius: 0.25rem;
+  border: 1px solid gray;
 }
 .product-list {
   display: grid;
